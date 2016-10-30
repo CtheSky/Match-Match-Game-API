@@ -1,0 +1,30 @@
+What additional properties did you add to your models and why?
+1. Float field average_attempts in User Model. (explained in next question)
+2. New Model Card. (explained in next question)
+3. New Model History
+    The reason is that I need to log very guess of the game in some way,
+    I choose to create a new history entity to log every guess, including
+    information of 2 guessed card and result of this match. Every history
+    has a Key property related to a Game instance, so it would be easy to
+    fetch history of a game. And there is also an Integer field nth standing
+    for player's nth guess, so it's possible to make history ordered.
+
+
+What were some of the trade-offs or struggles you faced when implementing the new game logic?
+1. Float field average_attempts in User Model.
+    It's a typical trad-off to gain time improvement at the cost of space. In this way,
+    when there is a new game finished and I have to update average_attempts of user,
+    I don't have to read attempts of every finished game, I only need the count of the finished
+    games to do the update.
+    Having a count field in User Model could be a further step, but I thought it's not as much
+    related as average_attempts so I didn't take it.
+2. New Model Card.
+    For every activate game, a list of 52 shuffled cards would be created into datastore, and when
+    game is finished or canceled, all cards of that game will be deleted. In this way, I could record
+    card information of a game and avoid having too much of them since card's life ends when game is
+    finished.
+    My wonder is that should I implement cards as class but not model, not put it into datastore.
+    The reason I didn't do that is that I am new to google app engine, but it seems to have different
+    instances running my code when scaling up, I'm not sure whether it would affect scaling since
+    all card objects is in memory and may be they have to synchronize between different instances.
+    I will go to documentation and try to find out, but for now I will choose a feasible and well known way.
