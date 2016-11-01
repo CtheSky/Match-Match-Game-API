@@ -138,16 +138,16 @@ class GuessANumberApi(remote.Service):
 
     @endpoints.method(request_message=USER_REQUEST,
                       response_message=GameForms,
-                      path='get_user_games',
-                      name='get_user_games',
+                      path='get_user_active_games',
+                      name='get_user_active_games',
                       http_method='GET')
-    def get_user_games(self, request):
+    def get_user_active_games(self, request):
         """Return all of a User's active games."""
         user = User.query(User.name == request.user_name).get()
         if not user:
             raise endpoints.NotFoundException(
                 'A User with that name does not exist!')
-        games = Game.get_user_games(user)
+        games = Game.get_user_active_games(user)
         return GameForms(items=[g.to_form(message='User\'s active game') for g in games])
 
     @endpoints.method(request_message=USER_REQUEST,

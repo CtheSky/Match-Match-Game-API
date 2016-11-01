@@ -52,7 +52,7 @@ class Game(ndb.Model):
         game.key.delete()
 
     @classmethod
-    def get_user_games(cls, user):
+    def get_user_active_games(cls, user):
         """Return all active games of user"""
         return Game.query(Game.user == user.key).filter(Game.game_over == False).fetch()
 

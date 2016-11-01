@@ -15,7 +15,7 @@ class SendReminderEmail(webapp2.RequestHandler):
         app_id = app_identity.get_application_id()
         users = User.query(User.email != None)
         for user in users:
-            games = Game.get_user_games(user)
+            games = Game.get_user_active_games(user)
             if len(games) != 0:
                 subject = 'This is a reminder!'
                 body = 'Hello {}, try out Guess A Number!'.format(user.name)
