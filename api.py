@@ -8,9 +8,12 @@ primarily with communication to/from the API's users."""
 import endpoints
 from protorpc import remote, messages
 
-from models import User, Game, History, Score
-from models import StringMessage, UserNameForm, GameForm, MakeMatchForm,\
-    MatchResultForm, HistoryForms, GameForms, ScoreForms, UserAverageForms
+from models.user import User, UserNameForm, UserAverageForms
+from models.game import Game, GameForm, GameForms
+from models.history import History, HistoryForms
+from models.score import Score, ScoreForms
+from models.message_form import MatchResultForm, MakeMatchForm, StringMessage
+
 from utils import get_by_urlsafe
 
 NEW_GAME_REQUEST = endpoints.ResourceContainer(UserNameForm)
@@ -28,7 +31,6 @@ USER_REQUEST = endpoints.ResourceContainer(user_name=messages.StringField(1),
 NUM_LIMIT_REQUEST = endpoints.ResourceContainer(
     number_of_results=messages.IntegerField(1, default=10),)
 
-MEMCACHE_MOVES_REMAINING = 'MOVES_REMAINING'
 
 @endpoints.api(name='guess_a_number', version='v1')
 class GuessANumberApi(remote.Service):
