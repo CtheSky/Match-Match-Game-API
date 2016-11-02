@@ -79,7 +79,7 @@ class GuessANumberApi(remote.Service):
         if not game:
             raise endpoints.NotFoundException('Game not found!')
         elif game.game_over:
-            raise endpoints.BadRequestException('Can\'t cancel a completed game!')
+            raise endpoints.ForbiddenException('Illegal action: Can\'t cancel a completed game!')
         else:
             Game.cancel_game(game)
             return game.to_form('Game has been canceled!')
@@ -109,19 +109,19 @@ class GuessANumberApi(remote.Service):
         if not game:
             raise endpoints.NotFoundException('Game not found!')
         if game.game_over:
-            return game.to_form('Game already over!')
+            raise endpoints.ForbiddenException('Illegal action: Game is already over.')
 
         pair_1 = request.guess_pair_1
         pair_2 = request.guess_pair_2
         if pair_1 == pair_2:
-            raise endpoints.BadRequestException('Two guess index must be different!')
+            raise endpoints.ForbiddenException('Illegal action: Two guess index must be different!')
         if pair_1 < 0 or pair_2 < 0 or pair_1 > 51 or pair_2 > 51:
-            raise endpoints.BadRequestException('Guess num must between 0 and 52!')
+            raise endpoints.ForbiddenException('Illegal action: Guess num must between 0 and 52!')
 
         try:
             return game.match_pair(pair_1=pair_1, pair_2=pair_2)
         except RuntimeError:
-            raise endpoints.BadRequestException('Could not rematch a matched card')
+            raise endpoints.ForbiddenException('Illegal action: Could not rematch a matched card')
 
 
     @endpoints.method(request_message=GET_GAME_HISTORY_REQUEST,
