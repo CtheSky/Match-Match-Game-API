@@ -14,6 +14,7 @@ from models.history import History, HistoryForms
 from models.score import Score, ScoreForms
 from models.message_form import MatchResultForm, MakeMatchForm, StringMessage
 
+from game_logic import GameLogic
 from utils import get_by_urlsafe
 
 NEW_GAME_REQUEST = endpoints.ResourceContainer(UserNameForm)
@@ -119,7 +120,7 @@ class GuessANumberApi(remote.Service):
             raise endpoints.ForbiddenException('Illegal action: Guess num must between 0 and 52!')
 
         try:
-            return game.match_pair(pair_1=pair_1, pair_2=pair_2)
+            return GameLogic.match_pair(game=game, pair_1=pair_1, pair_2=pair_2)
         except RuntimeError:
             raise endpoints.ForbiddenException('Illegal action: Could not rematch a matched card')
 
