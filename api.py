@@ -18,7 +18,7 @@ from models.message_form import MatchResultForm, MakeMatchForm, StringMessage
 from game_logic import GameLogic
 from utils import get_by_urlsafe
 
-NEW_GAME_REQUEST = endpoints.ResourceContainer(UserNameForm)
+CREATE_GAME_REQUEST = endpoints.ResourceContainer(UserNameForm)
 CANCEL_GAME_REQUEST = endpoints.ResourceContainer(
     urlsafe_game_key=messages.StringField(1),)
 GET_GAME_REQUEST = endpoints.ResourceContainer(
@@ -56,12 +56,12 @@ class MatchMatchApi(remote.Service):
                 request.user_name))
 
 
-    @endpoints.method(request_message=NEW_GAME_REQUEST,
+    @endpoints.method(request_message=CREATE_GAME_REQUEST,
                       response_message=GameForm,
                       path='game',
-                      name='new_game',
+                      name='create_game',
                       http_method='POST')
-    def new_game(self, request):
+    def create_game(self, request):
         """Creates new game"""
         user = User.query(User.name == request.user_name).get()
         if not user:
@@ -130,7 +130,7 @@ class MatchMatchApi(remote.Service):
 
     @endpoints.method(request_message=MAKE_GAME_EASIER_REQUEST,
                       response_message=HistoryForms,
-                      path='maek_game_easier/{urlsafe_game_key}',
+                      path='make_game_easier/{urlsafe_game_key}',
                       name='make_game_easier',
                       http_method='PUT')
     def make_game_easier(self, request):
@@ -145,7 +145,7 @@ class MatchMatchApi(remote.Service):
         if hint_num <= 0:
             raise endpoints.ForbiddenException('Illegal action: Can not receive a negative number.')
         if hint_num * 2 >= 52 - game.matched:
-            raise endpoints.ForbiddenException('Illegal action: Can not user hint to win, try a smaller number.')
+            raise endpoints.ForbiddenException('Illegal action: Can not use hint to win, try a smaller number.')
 
         hint_histories = GameLogic.make_game_easier(game=game, hint_num=hint_num)
         return HistoryForms(items=[h.to_form() for h in hint_histories])
