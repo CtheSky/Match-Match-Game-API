@@ -35,10 +35,8 @@ class GameLogic:
             form.message = 'Fail'
 
         # Construct return info form
-        form.matched_card_suit_1 = card_1.suit
-        form.matched_card_value_1 = card_1.value
-        form.matched_card_suit_2 = card_2.suit
-        form.matched_card_value_2 = card_2.value
+        form.card_1 = card_1.to_form()
+        form.card_2 = card_2.to_form()
         form.matched_count = game.matched
 
         if game.matched == 52:

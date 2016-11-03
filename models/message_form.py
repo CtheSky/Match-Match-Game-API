@@ -1,4 +1,5 @@
 from protorpc import messages
+from card import CardForm
 
 
 # ----- Shared Protorpc Message Forms ------
@@ -10,12 +11,10 @@ class MakeMatchForm(messages.Message):
 
 class MatchResultForm(messages.Message):
     """Used to give result of a match"""
-    matched_card_value_1 = messages.IntegerField(1, required=True)
-    matched_card_value_2 = messages.IntegerField(2, required=True)
-    matched_card_suit_1 = messages.StringField(3, required=True)
-    matched_card_suit_2 = messages.StringField(4, required=True)
-    matched_count = messages.IntegerField(5, required=True)
-    message = messages.StringField(6, required=True)
+    card_1 = messages.MessageField(CardForm, 1, required=True)
+    card_2 = messages.MessageField(CardForm, 2, required=True)
+    matched_count = messages.IntegerField(3, required=True)
+    message = messages.StringField(4, required=True)
 
 
 class StringMessage(messages.Message):
