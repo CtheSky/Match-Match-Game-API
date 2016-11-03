@@ -26,6 +26,7 @@ class History(ndb.Model):
                           value_2=card_2.value,
                           )
         history.put()
+        return history
 
     @classmethod
     def get_game_history(cls, game):
@@ -48,10 +49,10 @@ class History(ndb.Model):
 # ----- Protorpc Message Forms ------
 class HistoryForm(messages.Message):
     """HistoryForm for history information"""
-    matched_card_value_1 = messages.IntegerField(1, required=True)
-    matched_card_value_2 = messages.IntegerField(2, required=True)
-    matched_card_suit_1 = messages.StringField(3, required=True)
-    matched_card_suit_2 = messages.StringField(4, required=True)
+    card_value_1 = messages.IntegerField(1, required=True)
+    card_value_2 = messages.IntegerField(2, required=True)
+    card_suit_1 = messages.StringField(3, required=True)
+    card_suit_2 = messages.StringField(4, required=True)
     matched_count = messages.IntegerField(5, required=True)
     message = messages.StringField(6, required=True)
 
