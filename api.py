@@ -25,6 +25,9 @@ GET_GAME_REQUEST = endpoints.ResourceContainer(
     urlsafe_game_key=messages.StringField(1),)
 GET_GAME_HISTORY_REQUEST = endpoints.ResourceContainer(
     urlsafe_game_key=messages.StringField(1),)
+MAKE_GAME_EASIER_REQUEST = endpoints.ResourceContainer(
+    urlsafe_game_key=messages.StringField(1),
+    hint_num=messages.IntegerField(2, default=1))
 MAKE_MATCH_REQUEST = endpoints.ResourceContainer(
     MakeMatchForm,
     urlsafe_game_key=messages.StringField(1),)
@@ -124,6 +127,28 @@ class GuessANumberApi(remote.Service):
             return GameLogic.match_pair(game=game, pair_1=pair_1, pair_2=pair_2)
         except RuntimeError:
             raise endpoints.ForbiddenException('Illegal action: Could not rematch a matched card')
+
+    @endpoints.method(request_message=MAKE_GAME_EASIER_REQUEST,
+                      response_message=HistoryForms,
+                      path='maek_game_easier/{urlsafe_game_key}',
+                      name='make_game_easier',
+                      http_method='PUT')
+    def make_game_easier(self, request):
+        """Given a number, automatically match same count of pairs and return match histories"""
+        game = get_by_urlsafe(request.urlsafe_game_key, Game)
+        if not game:
+            raise endpoints.NotFoundException('Game not found!')
+        if game.game_over:
+            raise endpoints.ForbiddenException('Illegal action: Game is already over.')
+
+        hint_num = request.hint_num
+        if hint_num <= 0:
+            raise endpoints.ForbiddenException('Illegal action: Can not receive a negative number.')
+        if hint_num * 2 >= 52 - game.matched:
+            raise endpoints.ForbiddenException('Illegal action: Can not user hint to win, try a smaller number.')
+
+        hint_histories = GameLogic.make_game_easier(game=game, hint_num=hint_num)
+        return HistoryForms(items=[h.to_form() for h in hint_histories])
 
     @endpoints.method(request_message=GET_GAME_REQUEST,
                       response_message=CardForms,

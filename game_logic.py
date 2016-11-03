@@ -57,9 +57,44 @@ class GameLogic:
             score.put()
             form.message = 'Win'
 
-        # Create history log of this guess
+        # Create history log
         History.create_history(game=game,
                                card_1=card_1,
                                card_2=card_2,
                                message=form.message)
         return form
+
+    @classmethod
+    def make_game_easier(cls, game, hint_num):
+        cards = Card.get_cards_for_game(game)
+        unmatched_cards = filter(lambda c: not c.matched, cards)
+        hint_histories = []
+
+        while game.matched != 52 and hint_num > 0:
+            card_1 = unmatched_cards[0]
+            card_2 = filter(lambda c: c != card_1 and c.value == card_1.value, unmatched_cards)[0]
+            # Update game state
+            card_1.matched = True
+            card_2.matched = True
+            game.matched += 2
+            game.attempts += 1
+            hint_num -= 1
+            # Update card state unmatched card list
+            unmatched_cards.remove(card_1)
+            unmatched_cards.remove(card_2)
+            card_1.put()
+            card_2.put()
+            # Create history log
+            history = History.create_history(game=game, card_1=card_1, card_2=card_2, message='Hint Match')
+            hint_histories.append(history)
+
+        game.put()
+        return hint_histories
+
+
+
+
+
+
+
+
