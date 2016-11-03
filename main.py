@@ -5,7 +5,8 @@ cronjobs."""
 import webapp2
 from google.appengine.api import mail, app_identity
 
-from models import User, Game
+from models.user import User
+from models.game import Game
 
 
 class SendReminderEmail(webapp2.RequestHandler):
@@ -18,7 +19,7 @@ class SendReminderEmail(webapp2.RequestHandler):
             games = Game.get_user_active_games(user)
             if len(games) != 0:
                 subject = 'This is a reminder!'
-                body = 'Hello {}, try out Guess A Number!'.format(user.name)
+                body = 'Hello {}, try out your Match-Match game!'.format(user.name)
                 # This will send test emails, the arguments to send_mail are:
                 # from, to, subject, body
                 mail.send_mail('noreply@{}.appspotmail.com'.format(app_id),

@@ -37,8 +37,8 @@ NUM_LIMIT_REQUEST = endpoints.ResourceContainer(
     number_of_results=messages.IntegerField(1, default=10),)
 
 
-@endpoints.api(name='guess_a_number', version='v1')
-class GuessANumberApi(remote.Service):
+@endpoints.api(name='match_match_game', version='v1')
+class MatchMatchApi(remote.Service):
     """Game API"""
     @endpoints.method(request_message=USER_REQUEST,
                       response_message=StringMessage,
@@ -249,4 +249,4 @@ class GuessANumberApi(remote.Service):
         users = User.get_top_users(limit=limit)
         return UserAverageForms(items=[u.to_form() for u in users])
 
-api = endpoints.api_server([GuessANumberApi])
+api = endpoints.api_server([MatchMatchApi])
