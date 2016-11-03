@@ -1,8 +1,6 @@
 from protorpc import messages
 from google.appengine.ext import ndb
 
-from message_form import MatchResultForm
-
 
 class History(ndb.Model):
     """History object"""
@@ -37,17 +35,27 @@ class History(ndb.Model):
 
     def to_form(self):
         """Returns a MatchResultForm representation of the MatchResult"""
-        form = MatchResultForm()
-        form.matched_card_suit_1 = self.suit_1
-        form.matched_card_value_1 = self.value_1
-        form.matched_card_suit_2 = self.suit_2
-        form.matched_card_value_2 = self.value_2
+        form = HistoryForm()
+        form.card_suit_1 = self.suit_1
+        form.card_value_1 = self.value_1
+        form.card_suit_2 = self.suit_2
+        form.card_value_2 = self.value_2
         form.matched_count = self.matched
         form.message = self.message
         return form
 
 
 # ----- Protorpc Message Forms ------
+class HistoryForm(messages.Message):
+    """HistoryForm for history information"""
+    matched_card_value_1 = messages.IntegerField(1, required=True)
+    matched_card_value_2 = messages.IntegerField(2, required=True)
+    matched_card_suit_1 = messages.StringField(3, required=True)
+    matched_card_suit_2 = messages.StringField(4, required=True)
+    matched_count = messages.IntegerField(5, required=True)
+    message = messages.StringField(6, required=True)
+
+
 class HistoryForms(messages.Message):
     """Return multiple histories"""
-    items = messages.MessageField(MatchResultForm, 1, repeated=True)
+    items = messages.MessageField(HistoryForm, 1, repeated=True)
