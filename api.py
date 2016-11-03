@@ -10,6 +10,7 @@ from protorpc import remote, messages
 
 from models.user import User, UserNameForm, UserAverageForms
 from models.game import Game, GameForm, GameForms
+from models.card import Card, CardForms
 from models.history import History, HistoryForms
 from models.score import Score, ScoreForms
 from models.message_form import MatchResultForm, MakeMatchForm, StringMessage
@@ -124,6 +125,22 @@ class GuessANumberApi(remote.Service):
         except RuntimeError:
             raise endpoints.ForbiddenException('Illegal action: Could not rematch a matched card')
 
+    @endpoints.method(request_message=GET_GAME_REQUEST,
+                      response_message=CardForms,
+                      path='game_card/{urlsafe_game_key}',
+                      name='get_game_card',
+                      http_method='GET')
+    def get_game_card(self, request):
+        """Return card information of given game."""
+        game = get_by_urlsafe(request.urlsafe_game_key, Game)
+        if not game:
+            raise endpoints.NotFoundException('Game not found!')
+
+        if game.game_over:
+            raise endpoints.ForbiddenException('Illegal action: Game is already over.')
+
+        cards = Card.get_cards_for_game(game)
+        return CardForms(items=[c.to_form() for c in cards])
 
     @endpoints.method(request_message=GET_GAME_HISTORY_REQUEST,
                       response_message=HistoryForms,

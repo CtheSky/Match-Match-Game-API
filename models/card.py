@@ -1,5 +1,6 @@
 import random
 
+from protorpc import messages
 from google.appengine.ext import ndb
 
 
@@ -26,7 +27,34 @@ class Card(ndb.Model):
 
     @classmethod
     def delete_cards_for_game(cls, game):
-        """Delete cards of a finished game"""
+        """Delete cards of given game"""
         cards = Card.query(Card.game == game.key).fetch()
         for card in cards:
             card.key.delete()
+
+    @classmethod
+    def get_cards_for_game(cls, game):
+        """Get cards of given game"""
+        return Card.query(Card.game == game.key).fetch()
+
+    def to_form(self):
+        form = CardForm()
+        form.suit = self.suit
+        form.value = self.value
+        form.index = self.index
+        form.matched = self.matched
+        return form
+
+
+# ----- Protorpc Message Forms ------
+class CardForm(messages.Message):
+    """CardForm for card information"""
+    suit = messages.StringField(1, required=True)
+    value = messages.IntegerField(2, required=True)
+    index = messages.IntegerField(3, required=True)
+    matched = messages.BooleanField(4, required=True)
+
+
+class CardForms(messages.Message):
+    """Return multiple CardForms"""
+    items = messages.MessageField(CardForm, 1, repeated=True)
