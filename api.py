@@ -83,11 +83,11 @@ class MatchMatchApi(remote.Service):
         game = get_by_urlsafe(request.urlsafe_game_key, Game)
         if not game:
             raise endpoints.NotFoundException('Game not found!')
-        elif game.game_over:
+        if game.game_over:
             raise endpoints.ForbiddenException('Illegal action: Can\'t cancel a completed game!')
-        else:
-            Game.cancel_game(game)
-            return game.to_form('Game has been canceled!')
+
+        Game.cancel_game(game)
+        return game.to_form('Game has been canceled!')
 
 
     @endpoints.method(request_message=GET_GAME_REQUEST,
