@@ -1,7 +1,7 @@
 # Match-Match Game API
 This is a game api based on google api engine.
 
-##Game Description:
+## Game Description:
 [Concentration](https://en.wikipedia.org/wiki/Concentration_(game)) 
 is a card game in which all of the cards are laid face down on a surface and two cards
 are flipped face up over each turn. The object of the game is to turn over pairs of matching cards. 
@@ -45,7 +45,7 @@ https://match-match.appspot.com/_ah/api/explorer
 ## Cron job:
 Cron job is set to send a remainder email for users with active games on every sunday 9:00 am. 
 
-##Files Included:
+## Files Included:
  - api.py: Contains endpoints and game playing logic.
  - app.yaml: App configuration.
  - cron.yaml: Cronjob configuration.
@@ -53,7 +53,7 @@ Cron job is set to send a remainder email for users with active games on every s
  - models: Entity and message definitions including helper methods.
  - utils.py: Helper function for retrieving ndb.Models by urlsafe Key string.
 
-##Endpoints Included:
+## Endpoints Included:
  - **create_user**
     - Path: 'user'
     - Method: POST
